@@ -1,0 +1,109 @@
+LTspice 24.1.5 for Windows
+Circuit: G:\Ing Electronica\NxNx\Facultad\Materias\8vo Semestre\SRA\schematic.net
+Start Time: Wed Nov  5 14:32:28 2025
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+vernier = 0.5
+vernier = 0.25
+Gmin = 0.00053587
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+vernier = 0.015625
+Gmin = 0.000554092
+vernier = 0.0208333
+Gmin = 0.000528777
+vernier = 0.0277778
+vernier = 0.037037
+Gmin = 0.00048891
+vernier = 0.0493827
+vernier = 0.0658435
+Gmin = 0.000431587
+vernier = 0.0877914
+Gmin = 0.000354923
+vernier = 0.117055
+vernier = 0.156073
+Gmin = 0.000256142
+vernier = 0.208098
+vernier = 0.277464
+Gmin = 0.000153048
+vernier = 0.369952
+Gmin = 6.88369e-05
+vernier = 0.493269
+vernier = 0.246634
+vernier = 0.123317
+Gmin = 3.95039e-05
+vernier = 0.0616586
+vernier = 0.0308293
+vernier = 0.0154146
+vernier = 0.00770732
+Gmin = 3.97203e-05
+vernier = 0.00385366
+vernier = 0.00513821
+Gmin = 3.93776e-05
+vernier = 0.00685095
+vernier = 0.0091346
+Gmin = 3.87371e-05
+vernier = 0.0121795
+Gmin = 3.772e-05
+vernier = 0.0162393
+vernier = 0.0216524
+Gmin = 3.61127e-05
+vernier = 0.0288698
+vernier = 0.0384931
+Gmin = 3.37076e-05
+vernier = 0.0513241
+Gmin = 3.01472e-05
+vernier = 0.0684321
+vernier = 0.0912428
+Gmin = 2.51259e-05
+vernier = 0.121657
+vernier = 0.162209
+Gmin = 1.88539e-05
+vernier = 0.216279
+Gmin = 1.18777e-05
+vernier = 0.288372
+vernier = 0.384496
+Gmin = 5.63496e-06
+vernier = 0.512661
+vernier = 0.683548
+Gmin = 1.77239e-06
+vernier = 0.911397
+Gmin = 2.88576e-07
+vernier = 1
+Gmin = 3.15446e-08
+Gmin = 3.38708e-09
+Gmin = 3.63685e-10
+Gmin = 3.90503e-11
+Gmin = 4.193e-12
+vernier = 0.5
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+vernier = 0.015625
+vernier = 0.0078125
+vernier = 0.00390625
+vernier = 0.00195312
+Gmin = 4.193e-12
+vernier = 0.000976562
+vernier = 0.000488281
+Gmin = 0
+Gmin stepping succeeded in finding the operating point.
+
+Total elapsed time: 1.960 seconds.
+
+Files loaded:
+G:\Ing Electronica\NxNx\Facultad\Materias\8vo Semestre\SRA\schematic.net
+C:\Users\Nano\OneDrive\Documentos\LTspice\LMx24\lmx24_lm2902.lib
+
