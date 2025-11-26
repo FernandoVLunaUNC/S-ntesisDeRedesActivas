@@ -2,9 +2,14 @@
 
 \subsection{Estilos de texto y listas}
 
-Esto es un texto de ejemplo. Para generar párrafos en latex se puede escribir normalmente en un archivo \texttt{.tex}. Notar que en el editor un mismo párrafo aparece en una única línea de ``código".
+Esto es un texto de ejemplo. Para generar párrafos en latex se puede 
+escribir normalmente en un archivo \texttt{.tex}. Notar que en el editor 
+un mismo párrafo aparece en una única línea de ``código".
 
-Se puede modificar el estilo de texto para hacer \textit{partes en itálica} y \textbf{partes en negrita}, además se pueden incluir \texttt{palabras en fuente monoespaciada} o \underline{texto subrayado}. Además se pueden insertar listados o enumeraciones de items, por ejemplo:
+Se puede modificar el estilo de texto para hacer \textit{partes en itálica} 
+y \textbf{partes en negrita}, además se pueden incluir \texttt{palabras en 
+fuente monoespaciada} o \underline{texto subrayado}. Además se pueden insertar 
+listados o enumeraciones de items, por ejemplo:
 
 \begin{itemize}
     \item Item principal
@@ -26,10 +31,17 @@ Se puede modificar el estilo de texto para hacer \textit{partes en itálica} y \
 
 \subsection{Ecuaciones}
 
-Para insertar una ecuación se debe contar con el paquete \texttt{amsmath} incluido en el preámbulo del documento, en el archivo \texttt{main.tex} (o el archivo que se configure para compliarse como principal). Se puede insertar una ecuación en línea $e=mc^2$, o una ecuación enumerada o no enumerada. \footnote{Para más información de cómo escribir expresiones matemáticas con código visitar la url \url{https://www.overleaf.com/learn/latex/Mathematical_expressions}}
+Para insertar una ecuación se debe contar con el paquete \texttt{amsmath} 
+incluido en el preámbulo del documento, en el archivo \texttt{main.tex} 
+(o el archivo que se configure para compliarse como principal). 
+Se puede insertar una ecuación en línea $e=mc^2$, o una ecuación 
+enumerada o no enumerada. \footnote{Para más información de cómo 
+escribir expresiones matemáticas con código visitar la url 
+\url{https://www.overleaf.com/learn/latex/Mathematical_expressions}}
 
 \begin{equation}
-    s(\omega) = \left[ \left(\frac{1}{2}\right)^2 e^{j \pi \omega} \right] \int_{-\infty}^{\infty} \sum_{i=0}^{i=10} a_i dx
+    s(\omega) = \left[ \left(\frac{1}{2}\right)^2 e^{j \pi \omega} \right] 
+    \int_{-\infty}^{\infty} \sum_{i=0}^{i=10} a_i dx
     \label{eq:algun_nombre}
 \end{equation}
 
@@ -116,12 +128,29 @@ La \autoref{fig:tikzcirc} es un circuito diseñado con \url{https://circuit2tikz
     	\draw (9, 6) |- (7, 6) -| (7, 4.5);
     	\node[circ] at (10, 6.711){};
     	\draw (9, 6.711) -| (10, 6.75);
-    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (10.5, 6.711){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (10, 7.086){$v_{out}$};
-    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (9.5, 4.75){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (9, 5.125){$50\Omega$};
-    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (7.75, 3.25){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (7.25, 3.625){$10\mu F$};
-    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (6, 4){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (5.5, 4.375){$1k\Omega$};
+
+    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] 
+        at (10.5, 6.711) {};
+        \node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] 
+        at (10, 7.086) {$v_{out}$};
+        \node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] 
+        at (9.5, 4.75) {};
+        \node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] 
+        at (9, 5.125) {$50\Omega$};
+        \node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] 
+        at (7.75, 3.25) {};
+        \node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] 
+        at (7.25, 3.625) {$10\mu F$};
+        \node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] 
+        at (6, 4) {};
+        \node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] 
+        at (5.5, 4.375) {$1k\Omega$};
+
     	\draw[-latex] (3.5, 8) -| (3.5, 6.75) -- (4.25, 6.75);
-    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (3.5, 8.375){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (3, 8.75){$Z_{in}$};
+
+    	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] 
+        at (3.5, 8.375){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] 
+        at (3, 8.75){$Z_{in}$};
         
     \end{tikzpicture}
     \caption{Circuito de ejemplo con circuitkz}

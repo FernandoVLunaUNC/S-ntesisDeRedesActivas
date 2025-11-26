@@ -1,0 +1,50 @@
+\section{Desarrollo}
+
+A continuación se presentan los circuitos a analizar en este laboratorio.
+Se trata de dos circuitos una de Amplificadores Operacionales en dos etapas, 
+y otra de diseño de una Fuente de Tensión de Corriente Continua.
+
+Dentro del desarrollo de los circuitos se harán:
+\begin{itemize}
+    \item Realizar una breve introducción teórica.
+    \item Análisis del circuito.
+    \item Realizar el desarrollo numérico y analítico.
+    \item Realizar las simulaciones en LTspice.
+    \item Realizar el armado y mediciones de laboratorio.
+    \item Comprar los resultados obtenidos calculados, simulados y medidos.
+\end{itemize}
+
+\subsection{Circuito 1}
+
+Se presenta a continuación el circuito a analizar. La figura 
+\autoref{fig:circuito1} muestra el esquema del circuito compuesto 
+por dos Amplificadores Operacionales (AO) en cascada que deberá
+ser diseñado y analizado para obtener una \textbf{Ganancia Global} de $A_vf=20dB$,
+compensándolo para que opere en \textbf{Máxima Planicidad de Módulo} 
+($M_\varphi = 65°$ y $Q_p = 0.707$).
+
+
+\begin{circuitikz}[american]
+    \centering
+    % Entrada Vin
+    \draw (0,0) node[left]{$V_{in}$} to[short, o-] (1,0)
+        to[R=$R_i$] (3,0) coordinate (in1);
+
+     % Primer AO (A01)
+    \draw (in1) to[short] (3,1)
+        node[op amp, anchor=-] (op1) {}
+        (op1.out) to[short] ++(1,0) coordinate (out1) node[right]{$V_{mid}$};
+    \draw (op1.+) -- ++(0,-0.5) node[ground]{};
+    \draw (out1) |- (in1) to[R=$R_f$] (out1);
+
+    % Segundo AO (A02)
+    \draw (out1) to[R=$R_1$] ++(0,-2) coordinate (in2);
+    \draw (in2) to[short] ++(1.5,0)
+        node[op amp, anchor=-] (op2) {}
+        (op2.out) to[short] ++(1,0) node[right]{$V_{out}$};
+    \draw (op2.+) -- ++(0,-0.5) node[ground]{};
+    \draw (op2.-) to[R=$R_2$] ++(0,-1) node[ground]{};
+\end{circuitikz}
+
+\subsubsection{VFA-VFA}
+
