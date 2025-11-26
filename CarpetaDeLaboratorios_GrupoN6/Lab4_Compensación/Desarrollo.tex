@@ -24,27 +24,20 @@ compensándolo para que opere en \textbf{Máxima Planicidad de Módulo}
 ($M_\varphi = 65°$ y $Q_p = 0.707$).
 
 
-\begin{circuitikz}[american]
+\begin{figure}
     \centering
-    % Entrada Vin
-    \draw (0,0) node[left]{$V_{in}$} to[short, o-] (1,0)
-        to[R=$R_i$] (3,0) coordinate (in1);
+    \begin{circuitikz}
+        \draw (0, 0) to [american resistor, l=$R_i$] (2,0);
+        \node[ground] at (0,0){};
+        \node[op amp, yscale=-1](N1) at (3.2, 0.493){} node[anchor=center] at (N1.text){$LM741$};
+        \draw (2,-1) to [american resistor, l=$R_f$] (4,-1) -- (4,0) to [short, -*] (N1.out) -- (2,0) to [short, -*] (N1.-);
+        
+        
 
-     % Primer AO (A01)
-    \draw (in1) to[short] (3,1)
-        node[op amp, anchor=-] (op1) {}
-        (op1.out) to[short] ++(1,0) coordinate (out1) node[right]{$V_{mid}$};
-    \draw (op1.+) -- ++(0,-0.5) node[ground]{};
-    \draw (out1) |- (in1) to[R=$R_f$] (out1);
-
-    % Segundo AO (A02)
-    \draw (out1) to[R=$R_1$] ++(0,-2) coordinate (in2);
-    \draw (in2) to[short] ++(1.5,0)
-        node[op amp, anchor=-] (op2) {}
-        (op2.out) to[short] ++(1,0) node[right]{$V_{out}$};
-    \draw (op2.+) -- ++(0,-0.5) node[ground]{};
-    \draw (op2.-) to[R=$R_2$] ++(0,-1) node[ground]{};
-\end{circuitikz}
+    \end{circuitikz}
+    \caption{Esquema del circuito compuesto con dos amplificadores operacionales en cascada}
+    \label{fig:circuito1}
+\end{figure}
 
 \subsubsection{VFA-VFA}
 
