@@ -7,32 +7,86 @@
 %%VFA y CFA
 %%Margen de fase y planicidad de módulo
 %%Compensación activa de polos, distinción entre VFA y CFA y métodos de compensación
+Los amplificadores operacionales en cascada constituyen una técnica ampliamente utilizada cuando se requiere obtener elevadas ganancias de tensión, mejorar el acondicionamiento de señales o adaptar niveles entre distintas etapas de un sistema electrónico. Esta configuración consiste en conectar la salida de un amplificador operacional a la entrada del siguiente, de modo que la ganancia total resulta del producto de las ganancias individuales de cada etapa. Este enfoque permite distribuir la amplificación, evitando problemas asociados a ganancias excesivas en una única etapa, como la saturación, el aumento del ruido y la reducción del ancho de banda.
 
-\subsubsection{Análisis Teórico}
+Desde el punto de vista del comportamiento dinámico, los amplificadores operacionales pueden clasificarse, según su arquitectura interna, en amplificadores de realimentación por tensión (VFA, Voltage Feedback Amplifier) y amplificadores de realimentación por corriente (CFA, Current Feedback Amplifier). En los VFA, la señal de error se genera a partir de una diferencia de tensión entre sus entradas, mientras que en los CFA la variable controlada es una corriente de realimentación. Esta diferencia estructural se traduce en comportamientos distintos en términos de ancho de banda, estabilidad y respuesta en frecuencia, siendo los CFA especialmente adecuados para aplicaciones de alta velocidad.
 
-%Análisis de Av, T, Avf
+Un parámetro fundamental en el análisis de estabilidad de amplificadores en cascada es el margen de fase, el cual indica cuán alejado se encuentra el sistema de la condición de inestabilidad. Junto con éste, resulta relevante la planicidad del módulo de la respuesta en frecuencia, ya que una ganancia aproximadamente constante dentro de la banda útil garantiza una amplificación sin distorsión de amplitud. En configuraciones con múltiples etapas, estos parámetros se ven afectados por la superposición de polos de cada amplificador, lo que puede provocar inestabilidad o respuestas transitorias indeseadas.
 
-%Anaálisis de diseño para Av=20dB y Max planicidad de módulo
+Para asegurar un funcionamiento estable, es habitual emplear técnicas de compensación activa de polos, cuyo objetivo es modificar la ubicación de los polos dominantes del sistema para incrementar el margen de fase. Esta compensación puede realizarse de diversas formas, como el uso de capacitores de compensación interna, redes externas de adelanto-atraso, o mediante la propia arquitectura del amplificador. En este contexto, resulta importante distinguir entre los métodos de compensación utilizados en VFA y CFA, ya que los criterios de estabilidad y los mecanismos de realimentación difieren sustancialmente entre ambas tecnologías.
 
-%Análisis de Compensación Activa de Polos
+El circuito presentado en la \autoref{fig:circuito1} corresponde a un sistema de amplificadores operacionales en cascada, compuesto por dos etapas de amplificación conectadas de forma secuencial. La primera etapa (AO1) se encuentra configurada como un amplificador inversor, mientras que la segunda etapa (AO2) opera en configuración no inversora. Esta disposición permite combinar las ventajas de ambas configuraciones, obteniendo una ganancia total elevada con adecuada estabilidad y versatilidad en el acondicionamiento de la señal, facilitando su diseño par lograr una Ganancia Global de $20 dB$.
 
+La ganancia de la primera etapa depende de la relación entre las resistencias $R_f$ y $R_i$, dada por:
+
+\[
+A_{v1} = -\frac{R_f}{R_i}
+\]
+
+Por su parte, la segunda etapa presenta una ganancia determinada por el divisor resistivo formado por $R_1$ y $R_2$:
+
+\[
+A_{v2} = 1 + \frac{R_2}{R_1}
+\]
+
+En consecuencia, la ganancia total del sistema en cascada resulta:
+
+\[
+A_{vT} = A_{v1} \cdot A_{v2}
+\]
+
+Desde el punto de vista funcional, esta arquitectura permite obtener altas ganancias sin exigir valores extremos de resistencias en una sola etapa, lo cual contribuye a reducir el ruido, mejorar la estabilidad térmica y disminuir los efectos de las no idealidades del amplificador operacional. Además, la segunda etapa no inversora actúa como adaptador de impedancias, presentando una alta impedancia de entrada y una baja impedancia de salida, lo que favorece el acoplamiento con etapas posteriores.
+
+En cuanto a las características generales del sistema, se destacan:
 \begin{itemize}
-    \item \textbf{a: VFA-VFA}
-    %Diseño, BW, f_c, BW(-3dB), Marge de fase
-    \item \textbf{b: VFA-CFA}
-    %Diseño, BW, f_c, BW(-3dB), Marge de fase
-    \item \textbf{c: VFA-CFA}
-    %Diseño, BW, f_c, BW(-3dB), Marge de fase
+\item Alta ganancia total con realimentaciones moderadas.
+\item Mejor control de estabilidad frente a configuraciones de alta ganancia en una sola etapa.
+\item Mayor ancho de banda efectivo respecto a un único amplificador con igual ganancia total.
+\item Reducción relativa del impacto de los errores por offset, corrientes de polarización y ganancia finita.
 \end{itemize}
-\subsection{Diseño}
-\subsubsection{Simulaciones}
-\subsubsection{Mediciones de Laboratorio}
-\subsubsection{Resultados}
+
+Cuando ambas etapas del sistema son amplificadores de realimentación por tensión (VFA-VFA), la ganancia de cada etapa queda directamente determinada por relaciones de resistencias, y el ancho de banda del sistema resulta limitado por el producto ganancia-ancho de banda (GBW) de cada operacional. En esta configuración, el comportamiento es altamente predecible, con buena precisión en continua, alta linealidad y elevada estabilidad, siendo la opción más utilizada en aplicaciones de instrumentación y acondicionamiento de señales de baja y media frecuencia.
+
+Sin embargo, al encadenar dos VFA, el ancho de banda total se reduce progresivamente, ya que la respuesta en frecuencia del sistema resulta de la superposición de los polos dominantes de ambas etapas. Esto puede afectar la velocidad de respuesta y el margen de fase, especialmente cuando se trabaja con ganancias elevadas.
+
+En cambio, en una configuración mixta VFA-CFA, donde la primera etapa es un VFA y la segunda un amplificador de realimentación por corriente (CFA), se obtiene una mejora significativa en la respuesta en frecuencia del sistema. Los CFA presentan un ancho de banda prácticamente independiente de la ganancia, lo que permite conservar altas velocidades de operación aun cuando la ganancia total es elevada. Esto reduce las limitaciones impuestas por el GBW típico de los VFA y mejora el comportamiento dinámico del circuito.
+
+No obstante, los CFA suelen presentar menor precisión en continua, mayor sensibilidad a la disposición de la realimentación y, en general, una RRMC inferior al de los VFA, lo que los hace menos apropiados para aplicaciones de instrumentación de alta exactitud. Por esta razón, la elección entre una configuración VFA-VFA o VFA-CFA depende del compromiso requerido entre precisión estática y velocidad dinámica.
+
+En aplicaciones donde se prioriza la exactitud, estabilidad y bajo error en continua, la configuración VFA-VFA resulta más adecuada. En cambio, cuando se busca una alta velocidad de respuesta y un mayor ancho de banda, la configuración VFA-CFA se presenta como una alternativa más conveniente.
+
+\subsubsection{VFA-VFA}
+
+%Introduccion de VFA-VFA, características, ventajas y desventajas
+\subsection*{Análisis del Circuito en Cascada}
+
+\paragraph{Análisis Teórico}
+%Análisis teórico del circuito VFA-VFA en cascada, incluyendo fórmulas y consideraciones de estabilidad
+\paragraph{Diseño}
+\paragraph{Simulaciones}
+\paragraph{Mediciones de Laboratorio}
+\paragraph{Resultados}
+
+
+\subsubsection{CFA-VFA}
+\paragraph{Análisis Teórico}
+\paragraph{Diseño}
+\paragraph{Simulaciones}
+\paragraph{Mediciones de Laboratorio}
+\paragraph{Resultados}
+
+\subsubsection{CFA-VFA: II}
+\paragraph{Análisis Teórico}
+\paragraph{Diseño}
+\paragraph{Simulaciones}
+\paragraph{Mediciones de Laboratorio}
+\paragraph{Resultados}
 
 \subsection{Circuito 2: Fuente de Tensión de Corriente Continua}
 
-\subsubsection{Análisis Teórico}
-\subsection{Diseño}
-\subsubsection{Simulaciones}
-\subsubsection{Mediciones de Laboratorio}
-\subsubsection{Resultados}
+\paragraph{Análisis Teórico}
+\paragraph{Diseño}
+\paragraph{Simulaciones}
+\paragraph{Mediciones de Laboratorio}
+\paragraph{Resultados}
+
