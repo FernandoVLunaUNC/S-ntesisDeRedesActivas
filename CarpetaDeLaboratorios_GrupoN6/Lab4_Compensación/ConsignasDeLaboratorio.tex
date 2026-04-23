@@ -1,0 +1,87 @@
+\section{Consignas de Laboratorio}
+
+A continuación se presentan los circuitos a analizar en este laboratorio. Se trata de dos circuitos una de Amplificadores Operacionales en dos etapas, y otra de diseño de una Fuente de Tensión de Corriente Continua.
+
+Dentro del desarrollo de los circuitos se harán:
+
+\begin{itemize}
+    \item Realizar una breve introducción teórica.
+    \item Análisis del circuito.
+    \item Realizar el desarrollo numérico y analítico.
+    \item Realizar las simulaciones en LTspice.
+    \item Realizar el armado y mediciones de laboratorio.
+    \item Comprar los resultados obtenidos calculados, simulados y medidos.
+\end{itemize}
+
+\subsection{Circuito 1: Amplificadores Operacionales en Cascada}
+
+Se presenta a continuación el circuito a analizar. Se puede observar en la \autoref{fig:circuito1} muestra el esquema del circuito compuesto por dos Amplificadores Operacionales (AO) en cascada que deberá ser diseñado y analizado para obtener una \textbf{ganancia global} de $A_vf=20dB$, compensándolo para que opere en \textbf{Máxima Planicidad de Módulo} ($M_\varphi = 65°$ y $Q_p = 0.707$).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/Circuito_1.png}
+    \caption{Circuito 1: Amplificadores Operacionales en Cascada}
+    \label{fig:circuito1}
+\end{figure}
+
+\textbf{a: VFA-VFA}
+
+Utilizando tecnologías VFA-VFA. Como amplificador VFA se utilizará un LM324, de 2(dos) polos ($A_d0 = 100dB$, $f_T = 1MHz$, $f_1 = 10Hz$ y $f_2 = 5,06MHz$).
+
+\begin{enumerate}[label=a.\arabic*]
+    \item Diseñar el amplificador compuesto VFA-VFA.
+    \item Calcular el \textbf{ancho de banda}, la frecuencia del polo de la función de transferencia a lazo cerrado y el \textbf{ancho de banda} a $-3dB$.
+    \item Medir el ancho de banda a $-3dB$.
+    \item Estimar el \textbf{margen de fase} obtenido en base a la respuesta al escalón del amplificador compuesto.
+\end{enumerate}
+
+\textbf{b: VFA-CFA}
+
+Utilizando tecnologías VFA-CFA. Se sugiere como amplificador VFA un LM324, de 2(dos) polos ($A_d0 = 100dB$, $f_T = 1MHz$, $f_1 = 10Hz$ y $f_2 = 5,06MHz$) y como CFA un LM6181 con $R_T = 2,37M\Omega $, $C_T = 4,8pF$, cuya transimpedancia $Z_T$ presenta también 2(dos) polos ($f_1 = 14kHz$, $f_2 = 82,3MHz$).
+
+\begin{enumerate}[label=b.\arabic*]
+    \item Diseñar el amplificador compuesto VFA-CFA para \textbf{máxima planicidad de módulo} y que además cumpla con un \textbf{ancho de banda potencial} aproximado de $f_g = 2MHz$. Tener en cuenta la presencia del segundo polo del VFA.
+    \item Calcular el \textbf{ancho de banda potencial}, la frecuencia del polo de la función de transferencia a lazo cerrado y \textbf{ancho de banda} a $-3dB$.
+    \item Medir el ancho de banda a $-3dB$.
+    \item Estimar el \textbf{margen de fase} obtenido en base a la respuesta al escalón del amplificador compuesto.
+\end{enumerate}
+
+\textbf{c: VFA-CFA}
+
+Insertar en la configuración anterior una red de compensación \textbf{cero-polo} (a la salida del VFA) de tal modo que el cero de la red cancele el segundo polo del VFA. Ubicar el polo de la red a una octava de su cero. Retocar la ganancia del CFA realimentado para compensar la atenuación introducida por la red. Constatar la \textbf{mejora del margen de fase} a través de la respuesta al escalón.
+
+\begin{enumerate}[label=c.\arabic*]
+    \item Calcular y medir el \textbf{margen de fase}, el \textbf{ancho de banda potencial}, la frecuencia del polo de la función de transferencia a lazo cerrado y ancho de banda a $-3dB$.
+    \item Calcular el \textbf{ancho de banda potencial}, la frecuencia del polo de la función de transferencia a lazo cerrado y ancho de banda a $-3dB$.
+    \item Medir el ancho de banda a $-3dB$.
+    \item Estimar el \textbf{margen de fase} obtenido en base a la respuesta al escalón del amplificador compuesto.
+\end{enumerate}
+
+\subsection{Circuito 2: Fuente de Tensión de Corriente Continua}
+
+Se pide diseñar una Fuente de Tensión de Corriente Continua con los siguientes elementos:
+
+\begin{itemize}
+    \item Capacitores y Resistores.
+    \item Fuente de Tensión CC de 12V.
+    \item Amplificadores Operacionales LM324.
+    \item Referencia de Tensión $2,5V$ ($TL431$ o $LT1004-2.5$).
+    \item Transistor BJT ($2N3019$).
+\end{itemize}
+
+Los criterios de diseño son los siguientes:
+
+\begin{itemize}
+    \item Fuente $5V$/$500mA$.
+    \item Tolerancia de Tensión regulada: $0,1V$.
+    \item La variación (ripple) máxima admitida de $1\%$
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8  \textwidth]{figures/Circuito_2+formasDeOndasEsperadas.png}
+    \caption{Circuito 2: Fuente de Tensión de Corriente Continua y formas de onda esperadas}
+    \label{fig:circuito2}
+\end{figure}
+
+A su vez, se pide agregar los componentes necesarios para alcanzar las especificaciones y simular el transitorio de los primeros $50ms$, medir valor medio y ripple de estado estable.

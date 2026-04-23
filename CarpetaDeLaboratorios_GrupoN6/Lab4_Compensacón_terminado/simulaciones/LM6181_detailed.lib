@@ -1,0 +1,96 @@
+* LM6181 - macromodel detallado no oficial para LTspice
+* Objetivo: aproximar mejor el comportamiento dinámico del LM6181
+* topología current-feedback, Zt de dos polos, limitación de corriente,
+* swing de salida, reb y realce de slew-rate.
+*
+* Pines:
+* 1 = +IN
+* 2 = -IN
+* 3 = V+
+* 4 = V-
+* 5 = OUT
+*
+* NOTA:
+* - Este archivo NO es el macromodel oficial de TI.
+* - El modelo oficial históricamente fue distribuido por TI/TINA-TI.
+* - Este modelo está ajustado para ser estable en LTspice y capturar:
+*     RT ≈ 2.37MΩ
+*     CT ≈ 4.8pF
+*     F1 ≈ 14 kHz
+*     F2 ≈ 82.3 MHz
+*     reb ≈ 30Ω
+*     limitación de salida y corriente
+*     slew-rate alto aproximado
+
+.SUBCKT LM6181 1 2 3 4 5
+.param RT=2.37e6
+.param CT=4.8e-12
+.param RB=30
+.param F2=82.3e6
+.param R2=1k
+.param C2={1/(2*pi*R2*F2)}
+.param AOLBUF=1e6
+.param IOUTMAX=0.11
+.param VHEAD=1.35
+.param ROUT=0.12
+.param GIN=0.0333333333
+.param ISLEW=3.5m
+.param IBOOST=8m
+.param VBOOST=0.12
+
+* entrada no inversora de alta Z
+RINP 1 0 1T
+CINP 1 0 1p
+
+* buffer de la entrada + hacia el nodo interno del buffer
+EBUF NB 0 1 0 {AOLBUF/(1+AOLBUF)}
+RBUF NB NBM {RB}
+CINM NBM 0 0.7p
+
+* modelado de la entrada inversora de baja Z del CFA
+RINM 2 NBM 0.02
+
+* corriente de error hacia el nodo Zt
+* componente lineal:
+GERR 0 NZ VALUE = { GIN*( V(NBM)-V(2) ) }
+
+* realce de slew-rate para errores grandes
+BBOOSTP 0 NZ I = { IBOOST * 0.5*(1+tanh((V(NBM)-V(2)-VBOOST)/0.02)) }
+BBOOSTN 0 NZ I = { -IBOOST * 0.5*(1+tanh((-(V(NBM)-V(2))-VBOOST)/0.02)) }
+
+* limitación de corriente disponible hacia el nodo Zt
+* clamp suave sobre la corriente neta
+RSENSE NZ NS 1m
+BCLAMP 0 NS I = { LIMIT( V(NZ,NS)/1m, -ISLEW, ISLEW ) }
+
+* Zt dominante
+RZT NS 0 {RT}
+CZT NS 0 {CT}
+
+* segundo polo interno
+RZ2 NS N2 {R2}
+CZ2 N2 0 {C2}
+
+* cero muy alto para amortiguar / aproximar comportamiento HF
+RHF N2 NHF 50
+CHF NHF 0 0.4p
+
+* buffer de salida previo
+EDRV NDRV 0 N2 0 1
+RDRV NDRV NOUTI 8
+
+* limitador suave de swing respecto de rieles
+BVSAT NCL 0 V = { LIMIT( V(NOUTI), V(4)+VHEAD, V(3)-VHEAD ) }
+
+* limitación de corriente de salida
+* I = V/ROUT limitado a ±IOUTMAX
+BOUT NCL 5 I = { LIMIT( V(NCL,5)/ROUT, -IOUTMAX, IOUTMAX ) }
+
+* camino DC y resistencia de salida efectiva
+RLOADPATH 5 0 100Meg
+ROUTX 5 0 10Meg
+
+* corriente de alimentación aproximada
+IQ 3 4 7.5m
+
+.ENDS LM6181

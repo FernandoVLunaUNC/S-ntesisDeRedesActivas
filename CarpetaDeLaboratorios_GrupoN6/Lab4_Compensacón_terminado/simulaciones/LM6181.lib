@@ -1,0 +1,44 @@
+* LM6181 - modelo simplificado para LTspice
+* Ajustado para aproximar la transimpedancia interna:
+*   RT = 2.37Meg
+*   CT = 4.8pF
+*   Polo 1 = 14kHz  (aprox. por RT*CT)
+*   Polo 2 = 82.3MHz
+*
+* Pines del subcircuito:
+*   1 = +IN
+*   2 = -IN
+*   3 = V+
+*   4 = V-
+*   5 = OUT
+*
+* Nota: este es un macromodelo práctico para simulación,
+* no el modelo oficial completo del fabricante.
+
+.SUBCKT LM6181 1 2 3 4 5
+
+.param RT=2.37e6
+.param CT=4.8e-12
+.param RTF=820
+.param F2=82.3e6
+.param C2={1/(2*pi*RTF*F2)}
+
+* Entrada diferencial convertida a corriente (aprox. CFA)
+Gm 0 nz VALUE={(V(1,2))/RTF}
+
+* Transimpedancia dominante
+RZ nz 0 {RT}
+CZ nz 0 {CT}
+
+* Segundo polo
+R2 nz np2 {RTF}
+C2P np2 0 {C2}
+
+* Limitación de salida respecto de las alimentaciones
+BOUT nout 0 V=limit(V(np2), V(4)+1.5, V(3)-1.5)
+ROUT nout 5 10
+
+* Camino de DC para evitar nodos flotantes
+RDC 5 0 100Meg
+
+.ENDS LM6181
