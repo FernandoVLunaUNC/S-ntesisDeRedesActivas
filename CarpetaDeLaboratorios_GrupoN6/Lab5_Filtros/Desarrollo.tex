@@ -29,15 +29,27 @@ Utilizando el script de MATLAB proporcionado por la cátedra, se
 determinó el orden mínimo del filtro para cumplir con una 
 atenuación mínima de $30[dB]$ en la banda de rechazo y un 
 rizado máximo de $0.25[dB]$ en la banda de paso.\\
-El resultado obtenido fue un filtro de orden $4$, con una función 
-de:
+El resultado obtenido fue un filtro de orden $4$. Podemos observarlo en la 
+siguiente figura y su función de transferencia es:
 
-$$H(s) = \frac{1.642 10^7 \times s^2}{s^4 + 5080 \cdot s^3 + 9.586 \times 10^7 \cdot s^2 + 2.006 \times 10^11 \cdot s + 1.559 \times 10^15}$$
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Desarrollo/Matlab_1.png}
+    \caption{Plantilla de diseño del filtro.}
+\end{figure}
 
-Para la implementación física, se descompone esta función de 
-cuarto orden en dos etapas bicuadráticas de segundo orden (SOS). 
-Siguiendo la metodología de diseño, se identifican una etapa con 
-comportamiento de transferencia Pasa-Bajo y otra Pasa-Alto:
+$$H(s)_{TOTAL} = \frac{1.642 \cdot 10^7 \cdot s^2}{s^4 + 5080 \cdot s^3 + 
+9.586 \cdot 10^7 \cdot s^2 + 2.006 \cdot 10^11 \cdot s + 1.559 \cdot 
+10^15}$$
 
-$$T(s) = \frac{5252.26 \cdot s}{s^2 + 3184.42 \cdot s + 66320656} \frac{3126.49 \cdot s}{s^2 + 1895.58 \cdot s + 23500096}$$
+Para la implementación física, se descompone esta función de cuarto orden en 
+dos etapas bicuadráticas de segundo orden (SOS). Siguiendo la metodología de 
+diseño, se identifican una etapa con comportamiento de transferencia 
+Pasa-Bajo y otra Pasa-Alto:
+
+$$H(s)_{PB} = \frac{3.284 \cdot 10^7}{s^2 + 3184 \cdot s + 6.632 \cdot 10^7}$$
+
+$$H(s)_{PA} = \frac{0.5 \cdot 10^7}{s^2 + 1896 \cdot s + 2.35 \cdot 10^7}$$
+
+
 
