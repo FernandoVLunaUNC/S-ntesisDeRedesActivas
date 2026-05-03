@@ -1,0 +1,21 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Planilla de requerimientos}}{5}{figure.caption.3}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Respuesta en frecuencia del filtro pasa banda obtenido por medio del polinomio de Chebyshev}}{7}{figure.caption.4}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Respuesta en frecuencia del filtro pasa banda descompuesto en bicuadráticas}}{9}{figure.caption.5}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Topología Sallen-Key para filtro pasa bajo}}{10}{figure.caption.6}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Divisor resistivo a la entradapara corrección de ganancia}}{12}{figure.caption.7}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Topología Sallen-Key para filtro pasa alto}}{13}{figure.caption.8}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Resultados obtenidos para los componentes del filtro}}{19}{figure.caption.9}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Respuesta en frecuencia de los filtros obtenidos utilizando la topología Sallen-Key}}{19}{figure.caption.10}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Circuito completo implementado en LTSpice}}{20}{figure.caption.11}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Respuesta en frecuencia del filtro completo}}{20}{figure.caption.12}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Respuesta en frecuencia del filtro pasa bajo}}{20}{figure.caption.13}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Respuesta en frecuencia del filtro pasa alto}}{21}{figure.caption.14}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Simulación de Montecarlo con tolerancia del 10\%}}{21}{figure.caption.15}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Simulación de Montecarlo con tolerancia del 5\%}}{22}{figure.caption.16}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Red de realimentación del oscilador de puente de Wien}}{26}{figure.caption.17}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Ganancia y fase de la red de realimentación del oscilador de puente de Wien}}{27}{figure.caption.18}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Circuito completo del oscilador de puente de Wien}}{27}{figure.caption.19}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Simulación del oscilador de puente de Wien en LTSpice}}{30}{figure.caption.20}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Salida del oscilador}}{30}{figure.caption.21}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Transformada de Fourier de la salida del oscilador}}{30}{figure.caption.22}%

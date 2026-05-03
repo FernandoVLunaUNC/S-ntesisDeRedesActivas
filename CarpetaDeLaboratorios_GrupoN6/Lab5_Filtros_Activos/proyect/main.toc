@@ -1,0 +1,31 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Aproximación mediante polinomios de Chebyshev}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Descomposición en secciones bicuadráticas}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Filtros activos}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Topología Sallen-Key}{3}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Simulación y análisis de Montecarlo}{4}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Objetivos}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Consigna}{4}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Desarrollo}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Obtención del filtro pasa banda}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Descomposición en bicuadráticas}{7}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Diseño de filtros activos utilizando amplificadores operacionales}{10}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Filtro pasa bajo}{10}{subsubsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.4}Filtro pasa alto}{13}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Cálculo de componentes}{15}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Simulaciones}{19}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Simulación de Montecarlo}{21}{subsection.4.1}%
+\contentsline {section}{\numberline {5}Sensibilidad}{23}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Filtro pasa bajo}{23}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Filtro pasa alto}{24}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Conclusión}{25}{section.6}%
+\contentsline {section}{\numberline {A}Oscilador RC con puente de Wien}{26}{appendix.Alph1}%
+\contentsline {subsection}{\numberline {A.1}Introducción teórica}{26}{subsection.Alph1.1}%
+\contentsline {subsection}{\numberline {A.2}Diseño práctico de un oscilador de 12 kHz}{28}{subsection.Alph1.2}%
+\contentsline {subsubsection}{\numberline {A.2.1}Selección de componentes}{28}{subsubsection.Alph1.2.1}%
+\contentsline {subsubsection}{\numberline {A.2.2}Ajuste de la ganancia}{28}{subsubsection.Alph1.2.2}%
+\contentsline {subsubsection}{\numberline {A.2.3}Resultados del diseño}{29}{subsubsection.Alph1.2.3}%
+\contentsline {subsection}{\numberline {A.3}Ajuste de la frecuencia de oscilación}{29}{subsection.Alph1.3}%
+\contentsline {subsection}{\numberline {A.4}Simulación}{30}{subsection.Alph1.4}%
+\contentsline {subsection}{\numberline {A.5}Conclusión del anexo}{31}{subsection.Alph1.5}%

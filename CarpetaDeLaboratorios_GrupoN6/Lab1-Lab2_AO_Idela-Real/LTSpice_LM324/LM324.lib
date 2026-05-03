@@ -1,0 +1,20 @@
+* LM324 - modelo individual simplificado para LTspice
+* Orden de pines: IN+  IN-  V+  V-  OUT
+* Úsalo con un símbolo de 5 pines (opamp2.asy) en ese mismo orden.
+
+.subckt LM324_single inp inn vcc vee out
+.param A0=1e5    ; ganancia de lazo abierto (ajustable)
+.param Rout=50   ; resistencia de salida (ohm)
+.param Vhl=0.2   ; headroom arriba (Vcc - Vhl)
+.param Vll=0.2   ; headroom abajo (Vee + Vll)
+
+* Nodo interno de ganancia
+Eao nint 0 VALUE={ A0*( V(inp)-V(inn) ) }
+
+* Limitador a los rieles con margen (usar B-source comportamental)
+Bcl out 0 V={ limit( V(nint), V(vee)+Vll, V(vcc)-Vhl ) }
+
+* Impedancia de salida
+Rout out nint {Rout}
+
+.ends LM324_single

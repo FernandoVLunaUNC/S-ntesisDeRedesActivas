@@ -1,0 +1,1392 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{tikz}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+    language=Matlab,
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    breaklines=true,
+    tabsize=2
+}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setlength{\headheight}{15pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Trabajo Práctico N\ensuremath{^\circ} 4}
+\rhead{Síntesis de Redes Activas}
+\cfoot{\thepage}
+
+\captionsetup[figure]{labelfont=bf}
+
+\begin{document}
+
+\input{titlepage.tex}
+
+\tableofcontents
+\listoffigures
+\newpage
+
+%---------------------------------------------------%
+
+\section{Introducción}
+
+En el presente trabajo se aborda el diseño y síntesis de un filtro activo a partir de una serie de requerimientos en frecuencia. Para ello, se emplean herramientas de análisis y diseño que permiten pasar desde una especificación en frecuencia hasta una implementación física basada en amplificadores operacionales.
+
+\subsection{Aproximación mediante polinomios de Chebyshev}
+
+Para el diseño del filtro se emplean aproximaciones polinomiales de Chebyshev tipo I. Este tipo de aproximación se caracteriza por presentar un rizado controlado (ripple) en la banda de paso y una transición más abrupta hacia la banda de rechazo en comparación con otras aproximaciones como Butterworth.
+
+La respuesta en magnitud de estos filtros está basada en los polinomios de Chebyshev de primer tipo \(T_n(x)\), los cuales permiten optimizar el orden del sistema para cumplir simultáneamente con especificaciones de atenuación en banda de rechazo y ripple en banda de paso.
+
+\subsection{Descomposición en secciones bicuadráticas}
+
+Una vez obtenida la función de transferencia del filtro pasa banda, se procede a su descomposición en secciones de segundo orden (SOS). Esta técnica permite dividir el sistema en bloques más simples, facilitando su implementación y mejorando la estabilidad numérica.
+
+Cada sección bicuadrática puede implementarse de forma independiente, lo que resulta especialmente útil en el diseño de filtros activos.
+
+\subsection{Filtros activos}
+
+Los filtros activos utilizan amplificadores operacionales junto con resistencias y capacitores para implementar funciones de transferencia. A diferencia de los filtros pasivos, permiten incorporar ganancia y evitar el uso de inductores, lo cual simplifica la implementación en aplicaciones de baja y media frecuencia.
+
+Además, los filtros activos ofrecen mayor flexibilidad en el ajuste de parámetros como la frecuencia de corte y el factor de calidad.
+
+\subsection{Topología Sallen-Key}
+
+Para la implementación del circuito se utiliza la topología Sallen-Key, ampliamente empleada en el diseño de filtros activos de segundo orden. Esta configuración se caracteriza por su simplicidad y bajo número de componentes.
+
+Sin embargo, presenta una alta sensibilidad en ciertos parámetros, particularmente en el factor de calidad \(Q\), el cual depende de la ganancia del amplificador operacional. Esto implica que pequeñas variaciones en dicha ganancia pueden afectar significativamente la respuesta del sistema.
+
+\subsection{Simulación y análisis de Montecarlo}
+
+Para validar el diseño, se emplea LTSpice como herramienta de simulación, permitiendo analizar la respuesta en frecuencia del circuito.
+
+Adicionalmente, se realizan simulaciones de Montecarlo, las cuales consisten en introducir variaciones aleatorias en los valores de los componentes dentro de un rango de tolerancia. Este tipo de análisis permite evaluar la robustez del sistema y determinar su sensibilidad frente a desviaciones en los parámetros de diseño.
+
+%---------------------------------------------------%
+
+\section{Objetivos}
+
+El objetivo principal del presente trabajo es diseñar y sintetizar un filtro activo que cumpla con una serie de especificaciones en frecuencia, utilizando herramientas de análisis matemático, simulación y verificación experimental.
+
+Como objetivos específicos se plantean:
+
+\begin{itemize}
+    \item Obtener la función de transferencia del filtro a partir de especificaciones utilizando aproximaciones de Chebyshev.
+    \item Descomponer el filtro en secciones bicuadráticas.
+    \item Sintetizar un circuito que satisfaga los requerimientos del filtro utilizando topologías bicuadráticas de realimentación positiva o negativa.
+    \item Simular el comportamiento del circuito en herramientas como LTSpice.
+    \item Evaluar la sensibilidad del circuito ante variaciones de los componentes.
+    \item Analizar la robustez del diseño mediante simulaciones de Montecarlo.
+\end{itemize}
+
+\subsection{Consigna}
+
+En base a la planilla de requerimientos suministrada, se solicita:
+\begin{enumerate}
+    \item Aproximar la función de atenuación mediante polinomios de Chebyshev.
+    \item Sintetizar el circuito utilizando topologías bicuadráticas.
+    \item Simular cada etapa y el filtro total.
+    \item Calcular la sensibilidad de la frecuencia del polo y del ancho de banda.
+    \item Analizar la peor desviación con tolerancias del 10\%.
+    \item Realizar simulaciones de Montecarlo.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{media/planilla_consigna.png}
+    \caption{Planilla de requerimientos}
+    \label{fig:planilla_consigna}
+\end{figure}
+
+%---------------------------------------------------%
+
+\newpage
+
+\section{Desarrollo}
+
+En base a la planilla de requerimientos suministrada, se procedió a sintetizar un filtro compuesto por amplificadores operacionales que cumplan con la respuesta en frecuencia requerida.
+
+La respuesta presenta una banda de paso desde 800 Hz hasta 1250 Hz, con una atenuación máxima de 0.25 dB. Por otro lado, las bandas de rechazo se presentan para frecuencias menores a 200 Hz y mayores a 5000 Hz, con una atenuación mínima de 30 dB.
+
+Con estos datos, procedemos a realizar un programa en MATLAB que nos permita obtener la función de transferencia necesaria para el filtro requerido.
+
+El programa se basa en encontrar el polinomio de Chebyshev y luego, por medio de las herramientas de control del software, mostrar la función de transferencia del filtro y el orden del polinomio necesario para sintetizar el mismo.
+
+\subsection{Obtención del filtro pasa banda}
+
+\begin{lstlisting}[language=Matlab]
+fp = [800 1250];
+fs = [200 5000];
+
+Rp = 0.25;
+Rs = 30;
+
+Wp = 2*pi*fp;
+Ws = 2*pi*fs;
+
+[n, Wn] = cheb1ord(Wp, Ws, Rp, Rs, 's');
+[b, a] = cheby1(n, Rp, Wn, 'bandpass', 's');
+
+H = tf(b, a);
+
+disp(['Orden del filtro: ', num2str(n)])
+
+w = logspace(1,5,1000);
+[mag, ~] = bode(H, w);
+mag = squeeze(mag);
+
+figure
+semilogx(w/(2*pi), 20*log10(mag))
+grid on
+\end{lstlisting}
+
+Se obtiene un filtro de orden 2 cuya función de transferencia es:
+
+\[
+H(s) = \frac{1.642 \times 10^7 \, s^2}{s^4 + 5080s^3 + 9.586\times10^7 s^2 + 2.006\times10^{11}s + 1.559\times10^{15}}
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{media/Filtro_pasa_banda_original.png}
+    \caption{Respuesta en frecuencia del filtro pasa banda obtenido por medio del polinomio de Chebyshev}
+    \label{fig:filtro_original}
+\end{figure}
+
+\subsection{Descomposición en bicuadráticas}
+
+Ahora, como el objetivo es diseñar el filtro utilizando amplificadores operacionales, podemos separar el filtro pasa banda en dos etapas, una etapa compuesta por un filtro pasa bajo y otra etapa compuesta por un filtro pasa alto utilizando la descomposición en secciones de segundo orden (SOS). Para ello se utilizó el siguiente script en Matlab:
+
+
+\begin{lstlisting}[language=Matlab]
+% -------- Especificaciones -------- %
+fp = [800 1250];     % Banda de paso (Hz)
+fs = [200 5000];     % Banda de rechazo (Hz)
+
+Rp = 0.25;   % Ripple en banda de paso (dB)
+Rs = 30;     % Atenuacion en banda de rechazo (dB)
+
+% Conversion a rad/s
+Wp = 2*pi*fp;
+Ws = 2*pi*fs;
+
+%% ======== Filtro pasa banda ======== %%
+[n, Wn] = cheb1ord(Wp, Ws, Rp, Rs, 's');
+[b, a] = cheby1(n, Rp, Wn, 'bandpass', 's');
+H = tf(b, a);
+
+disp(['Orden del filtro: ', num2str(n)])
+
+%% ====== Descomposicion en SOS (bicuadratica) ====== %%
+[sos, g] = tf2sos(b, a);
+
+% Secciones de segundo orden
+H1 = tf(sos(1,1:3), sos(1,4:6));
+H2 = tf(sos(2,1:3), sos(2,4:6));
+
+% Aplicar ganancia total al primer bloque
+H1 = g * H1;
+
+% Verificacion
+H_reconstruido = series(H1, H2)
+
+%% ====== Identificacion automatica ====== %%
+% Evaluamos en baja frecuencia para distinguir HPF vs LPF
+
+w_test = 2*pi*100;
+
+[mag1, ~] = bode(H1, w_test);
+[mag2, ~] = bode(H2, w_test);
+
+mag1 = squeeze(mag1);
+mag2 = squeeze(mag2);
+
+if mag1 < mag2
+    H_hp = H1
+    H_lp = H2
+else
+    H_hp = H2
+    H_lp = H1
+end
+
+%% ====== Respuesta en frecuencia ====== %%
+w = logspace(1,5,2000);
+
+[mag_bp, ~] = bode(H, w);
+[mag_hp, ~] = bode(H_hp, w);
+[mag_lp, ~] = bode(H_lp, w);
+[mag_rec, ~] = bode(H_reconstruido, w);
+
+mag_bp = squeeze(mag_bp);
+mag_hp = squeeze(mag_hp);
+mag_lp = squeeze(mag_lp);
+mag_rec = squeeze(mag_rec);
+
+f = w/(2*pi);
+
+%% ====== Grafica ====== %%
+figure
+semilogx(f, 20*log10(mag_bp), 'LineWidth', 2)
+hold on
+semilogx(f, 20*log10(mag_hp), '--', 'LineWidth', 1.5)
+semilogx(f, 20*log10(mag_lp), '--', 'LineWidth', 1.5)
+semilogx(f, 20*log10(mag_rec), ':', 'LineWidth', 2)
+
+grid on
+xlabel('Frecuencia (Hz)')
+ylabel('Magnitud (dB)')
+title('Descomposicion del Filtro Pasa Banda en Bicuadraticas')
+
+legend('Pasa Banda original', ...
+       'Pasa Alto (bicuadratica)', ...
+       'Pasa Bajo (bicuadratica)', ...
+       'Reconstruccion (H1 * H2)')
+
+\end{lstlisting}
+
+Se obtienen:
+
+\[
+H_{LP}(s) = \frac{1.642 \times 10^7}{s^2 + 3184s + 6.632\times10^7}
+\]
+
+\[
+H_{HP}(s) = \frac{s^2}{s^2 + 1896s + 2.35\times10^7}
+\]
+
+Graficando la respuesta en frecuencia de los filtros obtenidos y del filtro resultante de la reconstrucción del filtro original, obtenemos:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{media/Filtro_biquads.png}
+    \caption{Respuesta en frecuencia del filtro pasa banda descompuesto en bicuadráticas}
+    \label{fig:filtro_biquads}
+\end{figure}
+---
+
+\newpage
+
+\subsection{Diseño de filtros activos utilizando amplificadores operacionales}
+
+Para sintetizar el filtro utilizando amplificadores operacionales, se optó por la topología Sallen-Key, que permite implementar tanto filtros pasa bajo como pasa alto de segundo orden de manera sencilla.
+
+\subsubsection{Filtro pasa bajo}
+
+La función objetivo es:
+
+\[
+H(s) = \frac{1.642\times10^7}{s^2 + 3184s + 6.632\times10^7}
+\]
+
+Forma estándar de la función de transferencia de un filtro pasa bajo:
+
+\[
+H(s) = \frac{a_0}{s^2 + \frac{\omega_0}{Q}s + \omega_0^2}
+\]
+
+Por lo tanto:
+
+\[
+\omega_0 = \sqrt{6.632\times10^7}
+\]
+
+\[
+Q = \frac{\omega_0}{3184}
+\]
+
+---
+
+Por otro lado, si analizamos el circuito Sallen-Key para un filtro pasa bajo
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{media/SK_Pasa_bajo.png}
+    \caption{Topología Sallen-Key para filtro pasa bajo}
+    \label{fig:sk_pasa_bajo}
+\end{figure}
+
+Considerando el amplificador operacional como ideal, se cumple que:
+
+\[
+V_+ = V_- \quad \text{y} \quad I_+ = I_- = 0
+\]
+\newline
+
+Por lo tanto:
+
+\[
+I_{Rb} = I_{Ra}
+\]
+
+\[
+\frac{V_o - V_-}{R_b} = \frac{V_-}{R_a}
+\]
+
+\[
+V_o = V_- \left( \frac{R_a + R_b}{R_a} \right) = k \cdot V_-
+\quad \Rightarrow \quad
+k = \frac{R_a + R_b}{R_a}
+\]
+
+\[
+V_- = \frac{V_o}{k}
+\]
+\newline
+
+Por otro lado:
+
+\[
+I_{R2} = I_{C1}
+\]
+
+Entonces:
+
+\[
+\frac{V_x - V_+}{R_2} = V_+ (sC_1)
+\]
+
+\[
+V_x = V_+ (sC_1 R_2 + 1)
+\]
+
+Como \( V_+ = V_- \):
+
+\[
+V_x = \frac{V_o}{k} (sC_1 R_2 + 1)
+\]
+\newline
+
+Finalmente, a partir de que:
+
+\[
+I_{R1} = I_{R2} + I_{C1}
+\]
+
+\[
+\frac{V_{in} - V_x}{R_1}
+=
+\frac{V_x - V_+}{R_2}
++
+(V_x - V_o)(sC_2)
+\]
+
+Para simplificar el cálculo, hacemos que:
+
+\[
+R_1 = R_2 = R \quad \text{y} \quad C_1 = C_2 = C
+\]
+
+Reemplazando y reordenando:
+
+\[
+V_{in} = \frac{V_o}{k}
+\left[
+(sCR + 1)(2 + sCR) - (sCR) - 1
+\right]
+\]
+
+Distribuyendo los factores:
+
+\[
+V_{in} = \frac{V_o}{k}
+\left[
+(RC)^2 s^2 + (RC)(3 - k)s + 1
+\right]
+\]
+
+Por lo tanto, podemos expresar la función de transferencia del circuito como:
+
+\[
+H(s)_{LPF} = \frac{V_o}{V_{in}} =
+\frac{k}{(RC)^2 s^2 + (RC)(3 - k)s + 1}
+\]
+
+Normalizando:
+
+\[
+H(s)_{LPF} =
+\frac{k \cdot \frac{1}{(RC)^2}}
+{s^2 + \frac{(3 - k)}{RC}s + \frac{1}{(RC)^2}}
+\]
+
+Por lo tanto, recordando que la función de transferencia para un filtro pasa bajo es:
+
+\[
+H(s)_{LPF} =
+\frac{a_0}{s^2 + \frac{\omega_0}{Q}s + \omega_0^2}
+\]
+
+Nos queda que:
+
+\begin{equation}
+\omega_0 = \sqrt{\frac{1}{(RC)^2}}
+\end{equation}
+
+\begin{equation}
+Q = \frac{\omega_0}{\frac{3 - k}{RC}}
+\end{equation}
+
+\begin{equation}
+a_0 = k \cdot \frac{1}{(RC)^2}
+\end{equation}
+\newline
+
+Permitiendo obtener los valores de R y C para el filtro pasa bajo.
+
+En el caso de la ganancia, en este filtro tenemos que:
+
+\begin{equation}
+G_{LPF} = k \cdot \frac{1}{(RC)^2}
+\end{equation}
+
+Y nuestra ganancia deseada para el filtro debe ser:
+
+\begin{equation}
+G_{deseada} = 1.642 \times 10^7
+\end{equation}
+
+Si la ganancia del filtro es distinta, se debe aplicar un factor de corrección:
+
+\begin{equation}
+G_{corr} = \frac{G_{deseada}}{G_{LPF}}
+\end{equation}
+
+Este factor de corrección se obtiene colocando un divisor resistivo en la entrada del circuito, de forma que se atenúa la señal de entrada sin modificar el funcionamiento del filtro. Por lo tanto:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{media/divisor_res.png}
+    \caption{Divisor resistivo a la entradapara corrección de ganancia}
+    \label{fig:divisor_res}
+\end{figure}
+
+\begin{equation}
+R = \frac{R_3 R_4}{R_3 + R_4}
+\end{equation}
+
+\begin{equation}
+G_{corr} = \frac{R_4}{R_3 + R_4}
+\end{equation}
+
+
+\subsection{Filtro pasa alto}
+
+La función de transferencia a obtener con este filtro es:
+
+\[
+H(s) = \frac{s^2}{s^2 + 1896s + 2.35\times10^7}
+\]
+
+La función de transferencia de un filtro pasa alto tiene la forma:
+
+\[
+H(s)_{HPF} = \frac{a_2 s^2}{s^2 + \frac{\omega_0}{Q}s + \omega_0^2}
+\]
+
+Por lo tanto, podemos definir el valor de los coeficientes \( \omega_0 \) y \( Q \) para nuestro caso, donde:
+
+\[
+\omega_0 = \sqrt{6.632\times10^7}
+\]
+
+\[
+Q = \frac{\omega_0}{1896}
+\]
+
+\[
+a_2 = 1
+\]
+
+Para el filtro pasa alto, el circuito, según la topología de Sallen-Key, nos queda:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/SK_Pasa_alto.png}
+    \caption{Topología Sallen-Key para filtro pasa alto}
+    \label{fig:sk_pasa_alto}
+\end{figure}
+
+Realizando el análisis sobre este circuito:
+
+\[
+V_+ = V_- \quad \text{y} \quad I_+ = I_- = 0
+\]
+
+Por lo tanto:
+
+\[
+I_{Rb} = I_{Ra}
+\]
+
+\[
+\frac{V_o - V_-}{R_b} = \frac{V_-}{R_a}
+\]
+
+\[
+V_o = V_- \left( \frac{R_a + R_b}{R_a} \right) = k \cdot V_-
+\quad \Rightarrow \quad
+k = \frac{R_a + R_b}{R_a}
+\]
+
+\[
+V_- = \frac{V_o}{k}
+\]
+
+Por otro lado:
+
+\[
+I_{C2} = I_{R2}
+\]
+
+Entonces:
+
+\[
+(V_x - V_+)(sC_1) = \frac{V_+}{R_2}
+\]
+
+\[
+V_x = V_+ \left( \frac{1}{sC_1 R_2} + 1 \right)
+\]
+
+Como \( V_+ = V_- \):
+
+\[
+V_x = \frac{V_o}{k} \left( \frac{1}{sC_1 R_2} + 1 \right)
+\]
+
+---
+
+Finalmente, a partir de que:
+
+\[
+I_{C1} = I_{C2} + I_{R1}
+\]
+
+\[
+(V_{in} - V_x)(sC_1) = (V_x - V_+)(sC_2) + \frac{V_x - V_o}{R_1}
+\]
+
+Para simplificar el cálculo, hacemos que:
+
+\[
+C_1 = C_2 = C
+\]
+
+Reemplazando y reordenando:
+
+\[
+V_{in} = \frac{V_o}{k}
+\left[
+\left( \frac{1}{s^2 C^2 R_2} + \frac{1}{sC} \right)\left(2 + \frac{1}{sCR_1}\right)
+- \left(\frac{k}{sCR_1}\right) - 1 
+\right]
+\]
+
+Distribuyendo los factores:
+
+\[
+V_{in} = \frac{V_o}{k}
+\left[
+\frac{1}{(C^2 R_1 R_2)s^2}
++
+\frac{1}{sC}\left(\frac{2}{R_2} + \frac{1-k}{R_1}\right)
++ 1
+\right]
+\]
+
+---
+
+Por lo tanto, podemos expresar la función de transferencia del circuito como:
+
+\[
+H(s)_{HPF} = \frac{V_o}{V_{in}} =
+\frac{k}{\frac{1}{(C^2 R_1 R_2)s^2} +
+\frac{1}{sC}\left(\frac{2}{R_2} + \frac{1-k}{R_1}\right) + 1}
+\]
+
+---
+
+Normalizando:
+
+\[
+H(s)_{HPF} =
+\frac{k s^2}{s^2 + s\left(\frac{2}{C R_2} + \frac{1-k}{C R_1}\right) + \frac{1}{C^2 R_1 R_2}}
+\]
+
+---
+
+Recordando que la forma estándar es:
+
+\[
+H(s)_{HPF} = \frac{a_2 s^2}{s^2 + \frac{\omega_0}{Q}s + \omega_0^2}
+\]
+
+---
+
+Nos queda que:
+
+\begin{center}
+\fbox{
+\begin{minipage}{0.9\textwidth}
+\begin{align*}
+\omega_0 &= \frac{1}{C\sqrt{R_1 R_2}} \\[10pt]
+Q &= \frac{\omega_0}{\left(\frac{2}{CR_2} + \frac{1-k}{CR_1}\right)} \\[10pt]
+a_2 &= k = 1
+\end{align*}
+\end{minipage}
+}
+\end{center}
+
+Permitiendo obtener los valores de R y C para el filtro pasa alto.
+
+\subsection{Cálculo de componentes}
+
+Para realizar el cálculo de los componentes necesarios para el circuito, se diseñó un programa en MATLAB que permite obtener los valores utilizando las ecuaciones descriptas.
+
+\begin{lstlisting}[language=Matlab]
+% -------- Funciones de transferencia objetivo -------- %
+
+% HPF
+num_hp = [1 0 0];
+den_hp = [1 1896 2.35e7];
+
+% LPF
+num_lp = [1.642e7];
+den_lp = [1 3184 6.632e7];
+
+H_hp = tf(num_hp, den_hp);
+H_lp = tf(num_lp, den_lp);
+
+%% ============================================= %%
+% -------- PARAMETROS -------- %
+
+% HPF
+w0_hp = sqrt(den_hp(3));
+Q_hp  = w0_hp / den_hp(2);
+
+%LPF
+w0_lp = sqrt(den_lp(3));
+Q_lp  = w0_lp / den_lp(2);
+
+fprintf('HPF: w0 = %.2f rad/s, Q = %.3f\n', w0_hp, Q_hp);
+fprintf('LPF: w0 = %.2f rad/s, Q = %.3f\n', w0_lp, Q_lp);
+
+%% ============================================= %%
+% -------- HPF (k = 1) -------- %
+
+C_hp = 1e-6;
+k_hp = 1;
+
+R2_hp = 2 / (C_hp * (w0_hp/Q_hp));
+R1_hp = 1 / ( (w0_hp^2) * (C_hp^2) * R2_hp );
+
+fprintf('\n--- HPF ---\n');
+fprintf('C1 = C2 = %.2e F\n', C_hp);
+fprintf('R1 = %.2f ohm\n', R1_hp);
+fprintf('R2 = %.2f ohm\n', R2_hp);
+
+%% ============================================= %%
+% -------- LPF -------- %
+
+C_lp = 0.1e-6;
+
+CR_lp = 1 / w0_lp;
+k_lp = 3 - (w0_lp/Q_lp)*CR_lp;
+
+R_lp = CR_lp / C_lp;
+
+fprintf('\n--- LPF ---\n');
+fprintf('C1 = C2 = %.2e F\n', C_lp);
+fprintf('R1 = R2 = %.2f ohm\n', R_lp);
+fprintf('k = %.3f\n', k_lp);
+
+%% ============================================= %%
+% -------- GANANCIA Y ESCALADO -------- %
+
+G_real = k_lp / (C_lp^2 * R_lp^2);
+G_deseada = 1.642e7;
+
+G_corr = G_deseada / G_real;
+
+fprintf('\n--- ESCALADO ---\n');
+fprintf('Ganancia obtenida = %.3e\n', G_real);
+fprintf('Factor correccion = %.5f\n', G_corr);
+
+%% ============================================= %%
+% -------- DIVISOR RESISTIVO --------%
+
+syms R3 R4;
+
+eq1 = R_lp == (R3*R4)/(R3+R4);
+eq2 = G_corr == R4/(R3+R4);
+
+sol = solve([eq1, eq2], [R3, R4]);
+
+R3 = double(sol.R3);
+R4 = double(sol.R4);
+
+fprintf('\n--- DIVISOR ---\n');
+fprintf('R3 = %.2f ohm\n', R3);
+fprintf('R4 = %.2f ohm\n', R4);
+
+%% ============================================= %%
+% -------- GANANCIA OPAMP LPF -------- %
+
+Rb = 1000;
+Ra = Rb/(k_lp-1);
+
+fprintf('\n--- OPAMP LPF ---\n');
+fprintf('Ra = %.2f ohm\n', Ra);
+fprintf('Rb = %.2f ohm\n', Rb);
+
+%% ============================================= %%
+% ---- FUNCIONES DE TRANSFERENCIA DE LOS FILTROS ---- %
+
+% HPF
+num_hp_sk = [1 0 0];
+den_hp_sk = [1 (w0_hp/Q_hp) w0_hp^2];
+H_hp_sk = tf(num_hp_sk, den_hp_sk);
+
+% LPF
+num_lp_sk = G_corr * k_lp/(C_lp^2 * R_lp^2);
+den_lp_sk = [1 (w0_lp/Q_lp) w0_lp^2];
+H_lp_sk = tf(num_lp_sk, den_lp_sk);
+
+% TOTAL
+H_total = series(H_hp, H_lp);
+H_total_sk = series(H_hp_sk, H_lp_sk);
+
+%% ============================================= %%
+% -------- RESPUESTA EN FRECUENCIA -------- %
+
+w = logspace(2,5,2000);
+
+[mag_hp, ~] = bode(H_hp, w);
+[mag_hp_sk, ~] = bode(H_hp_sk, w);
+
+[mag_lp, ~] = bode(H_lp, w);
+[mag_lp_sk, ~] = bode(H_lp_sk, w);
+
+[mag_total, ~] = bode(H_total, w);
+[mag_total_sk, ~] = bode(H_total_sk, w);
+
+mag_hp = squeeze(mag_hp);
+mag_hp_sk = squeeze(mag_hp_sk);
+
+mag_lp = squeeze(mag_lp);
+mag_lp_sk = squeeze(mag_lp_sk);
+
+mag_total = squeeze(mag_total);
+mag_total_sk = squeeze(mag_total_sk);
+
+f = w/(2*pi);
+
+%% ============================================= %%
+% -------- GRAFICO COMPARACION FILTRO TOTAL -------- %
+
+figure
+semilogx(f, 20*log10(mag_total), 'LineWidth',2)
+hold on
+semilogx(f, 20*log10(mag_total_sk), '--','LineWidth',2)
+
+grid on
+title('Filtro Total')
+xlabel('Frecuencia (Hz)')
+ylabel('Magnitud (dB)')
+legend('Original','Sallen-Key')
+
+%% ============================================= %%
+% -------- GRAFICO DE FILTROS COMBINADO  -------- %
+
+figure
+semilogx(f, 20*log10(mag_hp_sk), '--')
+hold on
+semilogx(f, 20*log10(mag_lp_sk), '--')
+semilogx(f, 20*log10(mag_total_sk), 'LineWidth',2)
+
+grid on
+title('Descomposicion del filtro')
+xlabel('Frecuencia (Hz)')
+ylabel('Magnitud (dB)')
+legend('HPF','LPF','Total')
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{media/res_componentes.png}
+    \caption{Resultados obtenidos para los componentes del filtro}
+    \label{fig:res_componentes}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{media/res_figura.png}
+    \caption{Respuesta en frecuencia de los filtros obtenidos utilizando la topología Sallen-Key}
+    \label{fig:res_figura}
+\end{figure}
+
+
+\section{Simulaciones}
+
+Se comprobó el funcionamiento del circuito diseñado realizando simulaciones en LTSpice para la respuesta en frecuencia del mismo.
+
+El circuito utilizado se muestra a continuación:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{media/circuito_sim.png}
+    \caption{Circuito completo implementado en LTSpice}
+    \label{fig:circuito}
+\end{figure}
+
+Realizando un barrido en frecuencia y observando la salida del filtro:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/resp_frec_sim.png}
+    \caption{Respuesta en frecuencia del filtro completo}
+    \label{fig:respuesta_total}
+\end{figure}
+
+La respuesta en frecuencia de cada filtro por separado nos queda:
+
+\begin{itemize}
+    \item \textbf{Filtro pasa bajo:}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/resp_frec_sim_LP.png}
+    \caption{Respuesta en frecuencia del filtro pasa bajo}
+    \label{fig:lpf}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Filtro pasa alto:}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/resp_frec_sim_HP.png}
+    \caption{Respuesta en frecuencia del filtro pasa alto}
+    \label{fig:hpf}
+\end{figure}
+
+\subsection{Simulación de Montecarlo}
+
+Se realizó una simulación de Montecarlo con el objetivo de evaluar la robustez del circuito frente a variaciones en los valores de los componentes pasivos.
+
+En primer lugar, se consideró una tolerancia del 10\% en resistencias y capacitores. El resultado de dicha simulación se muestra en la Figura \ref{fig:mc_10}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/montecarlo_10.png}
+    \caption{Simulación de Montecarlo con tolerancia del 10\%}
+    \label{fig:mc_10}
+\end{figure}
+
+Se puede observar una dispersión significativa en la respuesta del filtro, principalmente en la ganancia máxima y en la frecuencia central, lo cual evidencia una alta sensibilidad del circuito ante variaciones de los componentes.
+
+Posteriormente, se realizó una segunda simulación considerando una tolerancia del 5\% en todos los componentes. El resultado obtenido se muestra en la Figura \ref{fig:mc_5}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/montecarlo_5.png}
+    \caption{Simulación de Montecarlo con tolerancia del 5\%}
+    \label{fig:mc_5}
+\end{figure}
+
+En este caso, se observa una menor dispersión en las curvas, manteniéndose la forma general del filtro y reduciéndose las variaciones en la frecuencia de corte y en la ganancia.
+
+Estos resultados permiten concluir que el circuito presenta una sensibilidad considerable a las tolerancias de los componentes, siendo recomendable utilizar componentes de mayor precisión en las etapas críticas del diseño, particularmente en aquellas que afectan directamente el factor de calidad del filtro.
+
+\newpage
+
+\section{Sensibilidad}
+
+\subsection{Filtro pasa bajo}
+
+La función de transferencia del filtro pasa bajo es:
+
+\[
+H(s) = \frac{1.642 \times 10^7}{s^2 + 3184s + 6.632\times10^7}
+\]
+
+Donde:
+
+\[
+\omega_p = \frac{1}{CR}
+\]
+
+\[
+\frac{\omega_p}{Q_p} = \frac{3 - k}{CR}
+\]
+
+\[
+k = \frac{R_a + R_b}{R_a}
+\]
+
+---
+
+Calculando la sensibilidad de la frecuencia del polo, por definición:
+
+\[
+S_R^{\omega_p} = \frac{R}{\omega_p} \cdot \frac{d\omega_p}{dR} = -1
+\]
+
+\[
+S_C^{\omega_p} = \frac{C}{\omega_p} \cdot \frac{d\omega_p}{dC} = -1
+\]
+
+\[
+S_k^{\omega_p} = \frac{k}{\omega_p} \cdot \frac{d\omega_p}{dk} = 0
+\]
+
+---
+
+Para el término \( \omega_p / Q_p \):
+
+\[
+S_R^{\frac{\omega_p}{Q_p}} =
+\frac{R}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dR}
+= 0
+\]
+
+\[
+S_C^{\frac{\omega_p}{Q_p}} =
+\frac{C}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dC}
+= 0
+\]
+
+\[
+S_k^{\frac{\omega_p}{Q_p}} =
+\frac{k}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dk}
+=
+\frac{-k}{k - 3} = 6.67
+\]
+
+---
+
+Por lo tanto, se observa que la pulsación \( \omega_p \) varía proporcionalmente con los valores de \(R\) y \(C\), pero no depende del valor de la ganancia \(k\).
+
+Por otro lado, el término \( \omega_p / Q_p \) no varía con \(R\) ni con \(C\), pero sí depende fuertemente de la ganancia \(k\), presentando una variación significativa ante pequeños cambios en dicho parámetro.
+
+Esto indica que el factor de calidad del filtro es altamente sensible a la ganancia del amplificador operacional, por lo que resulta crítico controlar este parámetro en la implementación práctica del circuito.
+
+
+\subsection{Filtro pasa alto}
+
+La función de transferencia del filtro pasa alto es:
+
+\[
+H(s)_{HPF} = \frac{a_2 s^2}{s^2 + \frac{\omega_0}{Q}s + \omega_0^2}
+\]
+
+Donde:
+
+\[
+\omega_p = \frac{1}{C\sqrt{R_1 R_2}}
+\]
+
+\[
+\frac{\omega_p}{Q_p} =
+\left(\frac{2}{C R_2} + \frac{1-k}{C R_1}\right)
+\]
+
+\[
+k = \frac{R_a + R_b}{R_a}
+\]
+
+---
+
+Calculando la sensibilidad de la frecuencia del polo, por definición:
+
+\[
+S_{R_1}^{\omega_p} =
+\frac{R_1}{\omega_p} \cdot \frac{d\omega_p}{dR_1}
+= -0.5
+\]
+
+\[
+S_{R_2}^{\omega_p} =
+\frac{R_2}{\omega_p} \cdot \frac{d\omega_p}{dR_2}
+= -0.5
+\]
+
+\[
+S_C^{\omega_p} =
+\frac{C}{\omega_p} \cdot \frac{d\omega_p}{dC}
+= -1
+\]
+
+\[
+S_k^{\omega_p} =
+\frac{k}{\omega_p} \cdot \frac{d\omega_p}{dk}
+= 0
+\]
+
+---
+
+Para el término \( \omega_p / Q_p \):
+
+\[
+S_{R_1}^{\frac{\omega_p}{Q_p}} =
+\frac{R_1}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dR_1}
+= 0
+\]
+
+\[
+S_{R_2}^{\frac{\omega_p}{Q_p}} =
+\frac{R_2}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dR_2}
+= -1
+\]
+
+\[
+S_C^{\frac{\omega_p}{Q_p}} =
+\frac{C}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dC}
+= -1
+\]
+
+\[
+S_k^{\frac{\omega_p}{Q_p}} =
+\frac{k}{\frac{\omega_p}{Q_p}} \cdot
+\frac{d\left(\frac{\omega_p}{Q_p}\right)}{dk}
+\approx -13.07
+\]
+
+En este caso, se observa que la pulsación \( \omega_p \) varía con respecto a \(R_1\) y \(R_2\) con un factor de 0.5 por cada variación relativa de estos parámetros. Por otro lado, respecto a la capacitancia \(C\), la dependencia es lineal, presentando una sensibilidad de -1.
+
+La relación \( \omega_p / Q_p \) presenta dependencia con respecto a \(R_2\) y \(C\), ambas con sensibilidad igual a -1. Sin embargo, la mayor influencia se observa en la ganancia \(k\), donde la sensibilidad alcanza valores elevados, lo que indica que pequeñas variaciones en este parámetro generan cambios significativos en la respuesta del filtro.
+
+Esto confirma que la ganancia del amplificador operacional es un parámetro crítico en el diseño del filtro pasa alto, afectando directamente el factor de calidad del sistema.
+\newline
+
+\section{Conclusión}
+
+Se logró diseñar y sintetizar un filtro activo que cumple con las especificaciones planteadas, utilizando herramientas de análisis matemático, simulación y modelado computacional.
+
+El uso de aproximaciones de Chebyshev permitió obtener una respuesta en frecuencia que satisface los requisitos de atenuación y ripple con un orden mínimo del sistema, optimizando así la complejidad del diseño. La descomposición en secciones bicuadráticas resultó fundamental para la implementación práctica, permitiendo dividir el sistema en etapas de segundo orden más manejables.
+
+La implementación mediante la topología Sallen-Key demostró ser adecuada para este tipo de aplicaciones, ofreciendo una solución simple y eficiente. No obstante, se evidenció que esta topología presenta una alta sensibilidad en ciertos parámetros, particularmente en el factor de calidad \(Q\), el cual depende fuertemente de la ganancia del amplificador operacional.
+
+Las simulaciones en LTSpice mostraron una buena concordancia con los resultados teóricos, validando el diseño propuesto. Sin embargo, mediante el análisis de Montecarlo se observó que las tolerancias de los componentes generan variaciones significativas en la respuesta del sistema, especialmente en la ganancia máxima y la frecuencia central.
+
+El análisis de sensibilidad permitió identificar los parámetros críticos del diseño, destacando que la ganancia \(k\) tiene una influencia predominante sobre el comportamiento del filtro, en particular sobre el factor de calidad. Esto implica que, en una implementación práctica, es fundamental utilizar componentes de precisión y controlar cuidadosamente la ganancia del amplificador.
+
+En conclusión, el trabajo permitió integrar herramientas teóricas y prácticas para el diseño de filtros activos, evidenciando la importancia de considerar tanto el modelo ideal como los efectos de las variaciones reales de los componentes en el desempeño del sistema.
+
+\newpage
+
+\appendix
+\section{Oscilador RC con puente de Wien}
+
+\subsection{Introducción teórica}
+
+El oscilador de puente de Wien es un circuito capaz de generar señales sinusoidales a partir de una red de realimentación selectiva en frecuencia basada en elementos resistivos y capacitivos (RC). Su funcionamiento se basa en el cumplimiento del criterio de Barkhausen, el cual establece que para que un sistema oscile deben cumplirse simultáneamente dos condiciones:
+
+\begin{itemize}
+    \item La ganancia de lazo debe ser unitaria:
+    \[
+    A \cdot \beta = 1
+    \]
+    \item La fase total del sistema debe ser nula o múltiplo de \(360^\circ\)
+\end{itemize}
+
+En este tipo de oscilador, la red de realimentación está formada por una combinación de un circuito RC en serie y otro en paralelo, constituyendo un filtro pasa banda que selecciona una única frecuencia de oscilación.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{media/Red_RC_oscilador.png}
+    \caption{Red de realimentación del oscilador de puente de Wien}
+    \label{fig:red_rc}
+\end{figure}
+
+Cuando se cumple la condición de igualdad de componentes:
+
+\[
+R_1 = R_2 = R \quad ; \quad C_1 = C_2 = C
+\]
+
+la frecuencia de oscilación viene dada por:
+
+\[
+f_0 = \frac{1}{2\pi RC}
+\]
+
+En dicha frecuencia, la red introduce una atenuación de:
+
+\[
+\beta = \frac{1}{3}
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{media/G_Face_Wien.png}
+    \caption{Ganancia y fase de la red de realimentación del oscilador de puente de Wien}
+    \label{fig:g_face_wien}
+\end{figure}
+
+Por lo tanto, para cumplir el criterio de Barkhausen, la ganancia del amplificador debe ser:
+
+\[
+A = 3
+\]
+
+En una configuración no inversora, la ganancia se expresa como:
+
+\[
+A = 1 + \frac{R_f}{R_g}
+\]
+
+De donde se obtiene:
+
+\[
+\frac{R_f}{R_g} = 2
+\]
+
+Es importante destacar que si la ganancia es menor a 3, el circuito no oscila, mientras que si es mayor, la señal crece hasta saturar, generando distorsión. Por este motivo, en implementaciones prácticas se utilizan mecanismos de control de amplitud.
+
+El circuito completo del oscilador de puente de Wien se muestra a continuación:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{media/Osc_wien_comp.png}
+    \caption{Circuito completo del oscilador de puente de Wien}
+    \label{fig:osc_wien_comp}
+\end{figure}
+
+\subsection{Diseño práctico de un oscilador de 12 kHz}
+
+Se desea diseñar un oscilador de puente de Wien que genere una señal sinusoidal de frecuencia:
+
+\[
+f_0 = 12\,kHz
+\]
+
+\subsubsection{Selección de componentes}
+
+Se selecciona un valor práctico para los capacitores:
+
+\[
+C = 10\,nF = 10 \times 10^{-9} F
+\]
+
+A partir de la expresión de la frecuencia:
+
+\[
+f_0 = \frac{1}{2\pi RC}
+\]
+
+despejamos el valor de la resistencia:
+
+\[
+R = \frac{1}{2\pi f_0 C}
+\]
+
+Reemplazando valores:
+
+\[
+R = \frac{1}{2\pi \cdot 12000 \cdot 10^{-8}}
+\]
+
+\[
+R \approx 1326\,\Omega
+\]
+
+Por lo tanto, se selecciona un valor comercial cercano:
+
+\[
+R \approx 1.2\,k\Omega
+\]
+
+\subsubsection{Ajuste de la ganancia}
+
+Para asegurar la oscilación, la ganancia del amplificador debe ser:
+
+\[
+A = 3
+\]
+
+Utilizando un amplificador operacional en configuración no inversora:
+
+\[
+A = 1 + \frac{R_f}{R_g}
+\]
+
+De donde:
+
+\[
+\frac{R_f}{R_g} = 2
+\]
+
+Se eligen valores prácticos:
+
+\[
+R_g = 1\,k\Omega \quad ; \quad R_f = 2\,k\Omega
+\]
+
+\subsubsection{Resultados del diseño}
+
+Los valores finales del oscilador son:
+
+\begin{itemize}
+    \item \( R_1 = R_2 \approx 1.2\,k\Omega \)
+    \item \( C_1 = C_2 = 10\,nF \)
+    \item \( R_f = 2\,k\Omega \)
+    \item \( R_g = 1\,k\Omega \)
+\end{itemize}
+
+Esto permite obtener una señal sinusoidal con frecuencia cercana a 12 kHz.
+
+\subsection{Ajuste de la frecuencia de oscilación}
+
+Al realizar la simulación del oscilador de puente de Wien en LTSpice, se obtuvo una frecuencia de oscilación de aproximadamente:
+
+\[
+f_{sim} = 10.296\,kHz
+\]
+
+mientras que la frecuencia deseada es:
+
+\[
+f_{obj} = 12\,kHz
+\]
+
+Dado que la frecuencia de oscilación del circuito viene dada por:
+
+\[
+f_0 = \frac{1}{2\pi RC}
+\]
+
+es posible corregir la desviación ajustando el valor de R.
+\newline
+
+Se define el factor de corrección como:
+
+\[
+k_f = \frac{f_{sim}}{f_{obj}} = \frac{10.296}{12} = 0.858
+\]
+
+Dado que la frecuencia es inversamente proporcional al valor de R, se tiene que:
+
+\[
+f \propto \frac{1}{R}
+\]
+
+Por lo tanto, para aumentar la frecuencia hasta el valor deseado, es necesario reducir el valor de R en el mismo factor:
+
+\[
+R_{nuevo} = 0.858 \cdot R_{original}
+\]
+
+Por lo tanto:
+
+\[
+R_{nuevo} = 1030\,\Omega
+\]
+
+\subsection{Simulación}
+Se realizó una simulación en LTSpice para verificar el funcionamiento del oscilador diseñado. El circuito implementado se muestra a continuación:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{media/Osc_sim.png}
+    \caption{Simulación del oscilador de puente de Wien en LTSpice}
+    \label{fig:osc_sim}
+\end{figure}
+
+Al realizar un análisis transitorio, podemos observar la siguiente forma de onda, junto con la transformada de Fourier para verificar la frecuencia de oscilación:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{media/Vo_osc_sim.png}
+    \caption{Salida del oscilador}
+    \label{fig:osc_wave}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{media/TF_osc_sim.png}
+    \caption{Transformada de Fourier de la salida del oscilador}
+    \label{fig:osc_tf}
+\end{figure}
+
+\subsection{Conclusión del anexo}
+
+El oscilador de puente de Wien constituye una solución simple y efectiva para la generación de señales sinusoidales en un rango amplio de frecuencias. Su análisis pone en evidencia la importancia del equilibrio entre ganancia y realimentación, así como la influencia de los componentes en la estabilidad del sistema.
+
+El diseño realizado demuestra la aplicabilidad de los conceptos teóricos en un caso práctico, permitiendo obtener una señal de 12 kHz mediante una selección adecuada de componentes.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{sedra}
+A. S. Sedra y K. C. Smith,
+\textit{Microelectronic Circuits},
+Oxford University Press, 7th ed., 2014.
+
+\bibitem{horowitz}
+P. Horowitz y W. Hill,
+\textit{The Art of Electronics},
+Cambridge University Press, 3rd ed., 2015.
+
+\bibitem{haykin}
+S. Haykin,
+\textit{Communication Systems},
+John Wiley \& Sons, 5th ed., 2009.
+
+\bibitem{analog}
+Analog Devices,
+\textit{Active Filter Design Techniques},
+Application Note.
+
+\bibitem{electronics}
+Electronics Tutorials,
+\textit{Wien Bridge Oscillator},
+Disponible en: \url{https://www.electronics-tutorials.ws/oscillator/wien_bridge.html}
+
+\bibitem{matlab}
+MathWorks,
+\textit{MATLAB Control System Toolbox Documentation},
+Disponible en: \url{https://www.mathworks.com/help/control/}
+
+\bibitem{ltspice}
+Analog Devices,
+\textit{LTSpice Documentation},
+Disponible en: \url{https://www.analog.com/ltspice}
+
+\end{thebibliography}
+
+\end{document}
