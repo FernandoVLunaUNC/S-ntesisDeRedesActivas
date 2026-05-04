@@ -668,4 +668,149 @@ Los resultados obtenidos mediante simulaciones en LTspice demostraron el cumplim
 
 La incorporación de la red de compensación cero-polo permitió modificar la respuesta dinámica del sistema, logrando reducir el efecto del polo de alta frecuencia del VFA y mejorar la planicidad del módulo en la zona de transición. Asimismo, se comprobó que la compensación introducida requiere el reajuste de la ganancia del segundo amplificador para mantener el valor especificado de ganancia total. Los resultados obtenidos demuestran que la metodología aplicada permite diseñar amplificadores compuestos que cumplen con las especificaciones planteadas, verificando la validez del análisis teórico mediante simulación. 
 
+\newpage
+
+\section*{Anexo A: Diseño de una Fuente de Tensión CC}
+
+\subsection*{A.1 Topología del circuito}
+
+Se implementa una fuente de tensión continua regulada del tipo \textbf{regulador lineal serie}, compuesta por:
+
+\begin{itemize}
+\item Amplificador operacional LM324 como amplificador de error.
+\item Transistor BJT NPN (2N3019) como elemento de paso.
+\item Referencia de tensión de precisión de $2.5,\mathrm{V}$ (LT1004-2.5 o TL431).
+\item Red de realimentación resistiva.
+\end{itemize}
+
+El sistema funciona mediante realimentación negativa, comparando una fracción de la tensión de salida con una referencia fija.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{media/Cir_Fuente_sim.png}
+    \caption{Esquema de la fuente de tensión diseñada}
+    \label{fig:fuente}
+\end{figure}
+
+\subsection*{A.2 Cálculo de la tensión de salida}
+
+La tensión de salida queda definida por:
+
+\[
+V_{out} = V_{ref} \left(1 + \frac{R_2}{R_1} \right)
+\]
+
+Dado:
+
+\[
+V_{ref} = 2.5\,V \quad ; \quad V_{out} = 5\,V
+\]
+
+Se obtiene:
+
+\[
+5 = 2.5 \left(1 + \frac{R_2}{R_1} \right)
+\Rightarrow \frac{R_2}{R_1} = 1
+\]
+
+Por lo tanto, se selecciona:
+
+\[
+R_1 = R_2 = 1\,k\Omega
+\]
+
+Para mejorar la precisión (tolerancia $\pm 0.1,\mathrm{V}$), se recomienda utilizar resistencias de $1\%$.
+
+\subsection*{A.3 Análisis de potencia en el transistor}
+
+El transistor de paso disipa potencia debido a la caída de tensión:
+
+\[
+P = (V_{\mathrm{in}} - V_{\mathrm{out}})\cdot I_{\mathrm{out}}
+\]
+
+\[
+P = (12\mathrm{V} - 5\mathrm{V}) \cdot 0.5\mathrm{A} = 3.5\mathrm{W}
+\]
+
+Por lo tanto, es necesario el uso de un disipador térmico para garantizar operación segura.
+
+\subsection*{A.4 Dimensionamiento de capacitores de filtrado}
+
+\subsubsection*{Capacitor de entrada}
+
+Se incorpora un capacitor para reducir el ripple de la fuente de entrada:
+
+\begin{itemize}
+\item $C_{\mathrm{in}} = 470,\mu\mathrm{F}$ (electrolítico)
+\item $C_{\mathrm{in2}} = 100,\mathrm{nF}$ (cerámico)
+\end{itemize}
+
+\subsubsection*{Capacitor de salida}
+
+Para cumplir con la especificación de ripple menor al $1\%$ de la tensión de salida:
+
+\[
+\Delta V_{\mathrm{max}} = 0.01 \cdot 5,\mathrm{V} = 50,\mathrm{mV}
+\]
+
+El capacitor de salida mejora la respuesta ante cambios de carga y reduce el rizado:
+
+\begin{itemize}
+\item $C_{\mathrm{out}} = 470,\mu\mathrm{F} \text{ a } 1000,\mu\mathrm{F}$
+\item $C_{\mathrm{out2}} = 100,\mathrm{nF}$
+\end{itemize}
+
+\subsection*{A.5 Compensación del lazo de control}
+
+Debido a la presencia de polos introducidos por el transistor, la carga y el capacitor de salida, se agrega un capacitor de compensación:
+
+\[
+C_{\mathrm{comp}} = 10,\mathrm{pF} \text{ a } 100,\mathrm{pF}
+\]
+
+Este se conecta entre la salida del amplificador operacional y la entrada inversora.
+
+\subsection*{A.6 Resistencia de base}
+
+Para limitar la corriente de base:
+
+\[
+R_b = 100,\Omega \text{ a } 1,\mathrm{k}\Omega
+\]
+
+\subsection{Simulaciones}
+
+Se realizaron simulaciones en LTspice para verificar la estabilidad, el ripple y la respuesta dinámica de la fuente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/Salida_fuente_sim.png}
+    \caption{Respuesta de la fuente de tensión diseñada}
+    \label{fig:salida_fuente}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{media/Ripple_fuente_sim.png}
+    \caption{Ripple de la fuente de tensión diseñada}
+    \label{fig:ripple_fuente}
+\end{figure}
+
+Vemos que, a pesar de la variación de carga, la tensión de salida se mantiene estable en $5\mathrm{V}$, con un ripple inferior a $50\mathrm{mV}$, cumpliendo con las especificaciones.
+
+Por otro lado, se midió el valor medio de la tensión de salida, obteniendo un valor de $5.003\mathrm{V}$, por lo que se cumple con los requerimientos planteados en la consigna.
+
+\subsection*{A.8 Conclusión}
+
+A partir del diseño propuesto y la incorporación de los elementos de filtrado, compensación y control, se obtuvo una fuente de tensión lineal regulada capaz de cumplir con las especificaciones establecidas.
+
+El análisis teórico permitió dimensionar adecuadamente la red de realimentación, garantizando una tensión de salida de $5\mathrm{V}$, mientras que el estudio de potencia evidenció la necesidad de disipación térmica en el transistor de paso.
+
+Las simulaciones realizadas en LTspice validan el comportamiento del circuito, observándose que, ante variaciones abruptas de carga entre $250\mathrm{mA}$ y $500\mathrm{mA}$, la tensión de salida se mantiene dentro de los márgenes requeridos. Asimismo, el ripple obtenido resulta inferior a $50\mathrm{mV}$, cumpliendo con la restricción del $1\%$.
+
+Finalmente, el valor medio de salida de $5.003\mathrm{V}$ confirma que el diseño satisface la tolerancia de regulación especificada, evidenciando un funcionamiento estable y robusto frente a perturbaciones dinámicas.
+
+En conjunto, el circuito diseñado cumple con los requisitos de regulación, estabilidad y respuesta dinámica, constituyendo una solución adecuada para una fuente de $5\mathrm{V}$ y $500 \mathrm{mA}$ basada en un regulador lineal serie.
+
 \end{document}
